@@ -1,0 +1,45 @@
+{
+  "name": "ark-wallet-mass-generator",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "repository": "rigwild/ark-wallet-mass-generator",
+  "author": {
+    "name": "rigwild",
+    "email": "me@rigwild.dev",
+    "url": "https://rigwild.dev/"
+  },
+  "scripts": {
+    "start": "node dist/cli.js",
+    "build": "tsc"
+  },
+  "files": [
+    "dist/api.js",
+    "dist/cli.js"
+  ],
+  "keywords": [
+    "cli-app",
+    "cli",
+    "ark",
+    "wallet",
+    "generator",
+    "mass",
+    "bulk",
+    "find",
+    "crypto"
+  ],
+  "dependencies": {
+    "@arkecosystem/crypto": "^2.6.34",
+    "bip39": "^3.0.2",
+    "crypto": "^1.0.1",
+    "meow": "^6.1.0",
+    "promised-entropy": "^0.1.0",
+    "update-notifier": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/bytebuffer": "^5.0.40",
+    "@types/update-notifier": "^4.1.0",
+    "typescript": "^3.8.3"
+  }
+}
