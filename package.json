@@ -1,6 +1,6 @@
 {
   "name": "ark-wallet-mass-generator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
@@ -9,6 +9,9 @@
     "name": "rigwild",
     "email": "me@rigwild.dev",
     "url": "https://rigwild.dev/"
+  },
+  "bin": {
+    "ark-wallet-mass-generator": "dist/cli.js"
   },
   "scripts": {
     "start": "node dist/cli.js",
