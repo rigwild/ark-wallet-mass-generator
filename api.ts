@@ -3,8 +3,8 @@ import { generateMnemonic } from 'bip39'
 import { createHash, randomBytes } from 'crypto'
 import * as MoreEntropy from 'promised-entropy'
 
-import path from 'path'
 import fs from 'fs'
+import { NetworkName } from '@arkecosystem/crypto/dist/types'
 
 export const genWallet = async () => {
   const nbBits: number = 128
@@ -39,17 +39,20 @@ export interface GenerationOptions {
   amount?: number
   /** Concurrent wallets generation */
   concurrency?: number
+  /** Blockchain network */
+  network?: NetworkName
   /** Should logging output be hidden */
   hideLogs?: boolean
 }
 
 export const massGenerate = async ({
-  file = path.resolve(__dirname, '_wallets_ark.txt'),
+  file = '_wallets_ark.txt',
   amount = 30,
   concurrency = 12,
+  network = 'devnet',
   hideLogs = false
 }: GenerationOptions) => {
-  Managers.configManager.setFromPreset('mainnet')
+  Managers.configManager.setFromPreset(network)
   Managers.configManager.setHeight(999999999)
 
   let log: ReturnType<typeof loggerCount>

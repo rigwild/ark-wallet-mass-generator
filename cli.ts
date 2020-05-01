@@ -15,12 +15,14 @@ const cli = meow(
       --file -f         Output file (default: "_arkWallets.txt")
       --amount -a       Amount of wallets to generate (default: 30)
       --concurrency -c  Concurrent wallet generation (default: 12)
+      --network -n      Blockchain network (default: "devnet")
       --hideLogs        Hide logging output
 
-    Example
+    Examples
       $ ark-wallet-mass-generator
+      $ ark-wallet-mass-generator --network="mainnet"
       $ ark-wallet-mass-generator --file="_arkWallets.txt" --amount 500 -c 20
-      $ ark-wallet-mass-generator --amount 50 --concurrency 8 --hideLogs
+      $ ark-wallet-mass-generator --amount 50 --concurrency 8 --hideLogs --network="testnet"
 
     https://github.com/rigwild/ark-wallet-mass-generator
 `,
@@ -28,22 +30,22 @@ const cli = meow(
     flags: {
       file: {
         type: 'string',
-        alias: 'f',
-        default: '_arkWallets.txt'
+        alias: 'f'
       },
       amount: {
         type: 'number',
-        alias: 'a',
-        default: 30
+        alias: 'a'
       },
       concurrency: {
         type: 'number',
-        alias: 'c',
-        default: 12
+        alias: 'c'
+      },
+      network: {
+        type: 'string',
+        alias: 'n'
       },
       hideLogs: {
-        type: 'boolean',
-        default: false
+        type: 'boolean'
       }
     }
   }
