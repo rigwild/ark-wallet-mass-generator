@@ -40,11 +40,8 @@ export async function generateWalletsFs({
     cliProgress.Presets.shades_classic
   )
   if (logs) {
-    if (showWallets) console.info(`Generating ${amount} wallets to "${file}".\n`)
-    else {
-      console.info()
-      progressBar.start(amount, 0)
-    }
+    console.info(`Generating ${amount} wallets to "${file}".\n`)
+    if (!showWallets) progressBar.start(amount, 0)
   }
 
   const pool = Pool(() => spawn<WorkerMethods>(new Worker('./worker')), { concurrency: 6 })

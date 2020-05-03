@@ -5,6 +5,8 @@
 
 Generate a lot of [ARK](https://ark.io/) wallets quickly. This can be useful to find a nice wallet address.
 
+Uses Node.js [Worker Threads](https://nodejs.org/api/worker_threads.html) for optimal performance (will use a Polyfill if Node.js version is less than 12).
+
 ## Install
 ```
 $ yarn global add ark-wallet-mass-generator
@@ -36,12 +38,21 @@ $ ark-wallet-mass-generator --help
 ```
 
 ## Output
-Generated wallets will be appended to your output file with the following format.
+Generated wallets will be appended to your output file with the following format:
+
 ```
 AazdtKbM6dwBPmRpdYySE4GGUyGhCpKmCM;topic crush heart chase return breeze boil laugh silly antenna hen width
 AH3tAPYZyYeLFb6nEcGyY8xKY2WmfQqv2W;forest pepper sauce flat flame object basic odor wall dutch mail mosquito
 AM3DCuCdZtLEsC9KFDqU7Dhme7Tce7D6mF;clerk rookie direct saddle mesh eye confirm have silly doll enact profit
 ASfKW3gsjF3FMyXgyp3WK77f2k6rdCsNKZ;fence banner dirt uniform dawn fan ribbon ill person banana ridge stone
+```
+
+## Benchmark
+Windows 10 x64 - Intel Core i7-6700HQ CPU @ 2.60GHz (8 cores)
+
+```
+Generated 5000 wallets to "_arkWallets.txt" in 55s
+=> 90.9 wallets/s
 ```
 
 ## Related
