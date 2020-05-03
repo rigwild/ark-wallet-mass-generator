@@ -35,14 +35,19 @@
   "dependencies": {
     "@arkecosystem/crypto": "^2.6.34",
     "bip39": "^3.0.2",
+    "cli-progress": "^3.8.2",
     "crypto": "^1.0.1",
     "meow": "^6.1.0",
     "promised-entropy": "^0.1.0",
+    "threads": "^1.4.1",
+    "tiny-worker": "^2.3.0",
     "update-notifier": "^4.1.0"
   },
   "devDependencies": {
     "@types/bytebuffer": "^5.0.40",
+    "@types/cli-progress": "^3.4.2",
     "@types/update-notifier": "^4.1.0",
+    "ts-node": "^8.10.1",
     "typescript": "^3.8.3"
   }
 }

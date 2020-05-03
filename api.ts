@@ -1,79 +1,83 @@
-import { Identities, Managers } from '@arkecosystem/crypto'
-import { generateMnemonic } from 'bip39'
-import { createHash, randomBytes } from 'crypto'
-import * as MoreEntropy from 'promised-entropy'
-
 import fs from 'fs'
-import { NetworkName } from '@arkecosystem/crypto/dist/types'
+import { spawn, Worker, Pool } from 'threads'
+import { Managers } from '@arkecosystem/crypto'
+import cliProgress from 'cli-progress'
 
-export const genWallet = async () => {
-  const nbBits: number = 128
-  const bytes = Math.ceil(nbBits / 8)
-  const hudgeEntropy: number[] = await MoreEntropy.promisedEntropy(nbBits)
-  const seed = randomBytes(bytes)
-  const entropy = createHash('sha256')
-    .update(Buffer.from(new Int32Array(hudgeEntropy).buffer))
-    .update(seed)
-    .digest()
-    .slice(0, bytes)
-  const passphrase = generateMnemonic(nbBits, _ => entropy)
-  return `${Identities.Address.fromPassphrase(passphrase)};${passphrase}`
-}
+import type { WorkerMethods } from './worker'
+import type { GenerationOptions, Wallet, GenerationOptionsFs } from './types'
 
-export const chunkArray = <T>(array: T[], chunkSize: number) =>
-  Array.from({ length: Math.ceil(array.length / chunkSize) }, (_, index) =>
-    array.slice(index * chunkSize, (index + 1) * chunkSize)
-  )
-
-export const loggerCount = (countWidth: number = 2, padStr = ' ') => {
-  let count = 0
-  return (...args: any[]) => (
-    count++, process.stdout.write(`${count.toString().padStart(countWidth, padStr)} `), console.log(...args)
-  )
-}
-
-export interface GenerationOptions {
-  /** Output file */
-  file?: string
-  /** Amount of wallets to generate */
-  amount?: number
-  /** Concurrent wallets generation */
-  concurrency?: number
-  /** Blockchain network */
-  network?: NetworkName
-  /** Should logging output be hidden */
-  hideLogs?: boolean
-}
-
-export const massGenerate = async ({
-  file = '_wallets_ark.txt',
-  amount = 30,
-  concurrency = 12,
-  network = 'devnet',
-  hideLogs = false
-}: GenerationOptions) => {
+export async function generateWallets({ amount = 100, network = 'devnet' }: GenerationOptions = {}) {
   Managers.configManager.setFromPreset(network)
   Managers.configManager.setHeight(999999999)
 
-  let log: ReturnType<typeof loggerCount>
-  if (!hideLogs) {
-    console.log(`Generating ${amount} wallets with concurrency ${concurrency} to "${file}".\n`)
-    log = loggerCount(amount.toString().length, '0')
-  }
-  const chunked = chunkArray(Array(amount).fill(0), concurrency)
+  const pool = Pool(() => spawn<WorkerMethods>(new Worker('./worker')), { concurrency: 6 })
 
-  let generatedWallets = []
+  let generatedWallets: Wallet[] = []
+
+  const addWallet = async ({ genWallet }: WorkerMethods) => generatedWallets.push(await genWallet())
+  for (let i = 0; i < amount; i++) pool.queue(addWallet)
+
+  await pool.completed()
+  await pool.terminate()
+
+  return generatedWallets
+}
+
+export async function generateWalletsFs({
+  file = '_arkWallets.txt',
+  amount = 100,
+  network = 'devnet',
+  logs = true,
+  showWallets = false
+}: GenerationOptionsFs = {}) {
+  Managers.configManager.setFromPreset(network)
+  Managers.configManager.setHeight(999999999)
+
+  let walletCount = 1
+
+  let progressBar = new cliProgress.SingleBar(
+    { clearOnComplete: true, etaBuffer: 100 },
+    cliProgress.Presets.shades_classic
+  )
+  if (logs) {
+    if (showWallets) console.info(`Generating ${amount} wallets to "${file}".\n`)
+    else {
+      console.info()
+      progressBar.start(amount, 0)
+    }
+  }
+
+  const pool = Pool(() => spawn<WorkerMethods>(new Worker('./worker')), { concurrency: 6 })
+
+  let generatedWallets: Wallet[] = []
+  const hrstart = process.hrtime()
 
   const fileHandle = await fs.promises.open(file, 'a')
-  for (const aChunk of chunked) {
-    const wallets = await Promise.all(aChunk.map(() => genWallet()))
-    generatedWallets.push(...wallets)
-    if (!hideLogs) wallets.forEach(x => log(x.split(';')[0]))
-    await fileHandle.writeFile(`${wallets.join('\n')}\n`)
-  }
-  await fileHandle.close()
 
-  if (!hideLogs) console.log(`\nAll ${amount} wallets were successfully generated to "${file}".`)
+  const addWallet = async ({ genWallet }: WorkerMethods) => {
+    const wallet = await genWallet()
+    generatedWallets.push(wallet)
+    await fileHandle.writeFile(`${wallet.address}:${wallet.passphrase}\n`)
+
+    if (logs) {
+      const countPadded = walletCount.toString().padStart(amount.toString().length, '0')
+      if (!showWallets) progressBar.increment()
+      else console.log(`${countPadded} ${wallet.address}`)
+    }
+    walletCount++
+  }
+
+  for (let i = 0; i < amount; i++) pool.queue(addWallet)
+
+  await pool.completed()
+  await pool.terminate()
+  await fileHandle.close()
+  const hrend = process.hrtime(hrstart)
+
+  if (logs) {
+    if (!showWallets) progressBar.stop()
+    console.info(`\nGenerated ${amount} wallets to "${file}" in ${hrend[0]}s.\n`)
+  }
 
   return generatedWallets
 }

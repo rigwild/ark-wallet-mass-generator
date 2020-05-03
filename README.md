@@ -17,19 +17,20 @@ $ ark-wallet-mass-generator --help
 
   Usage
     $ ark-wallet-mass-generator
-
+  
   Options
-    --file -f         Output file (default: "_arkWallets.txt")
-    --amount -a       Amount of wallets to generate (default: 30)
-    --concurrency -c  Concurrent wallet generation (default: 12)
-    --network -n      Blockchain network (default: "devnet")
-    --hideLogs        Hide logging output
+    --file -f         Output file [Default: "_arkWallets.txt"]
+    --amount -a       Amount of wallets to generate [Default: 100]
+    --network -n      Blockchain network [Default: "devnet"]
+    --no-logs         Hide all logging output
+    --show-wallets    Print wallets to the terminal instead of the progress bar [Default: false]
 
   Examples
     $ ark-wallet-mass-generator
     $ ark-wallet-mass-generator --network="mainnet"
-    $ ark-wallet-mass-generator --file="_arkWallets.txt" --amount 500 -c 20
-    $ ark-wallet-mass-generator --amount 50 --concurrency 8 --hideLogs --network="testnet"
+    $ ark-wallet-mass-generator --file="_arkWallets.txt" --amount 500000
+    $ ark-wallet-mass-generator --amount 500 --no-logs --network="testnet"
+    $ ark-wallet-mass-generator --show-wallets
 
   https://github.com/rigwild/ark-wallet-mass-generator
 ```
