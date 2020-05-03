@@ -1,19 +1,21 @@
 # ark-wallet-mass-generator
 > Generate a lot a ARK wallets 👛
 
-![Screenshot](./screenshot.png)
+![Demo gif](./demo.gif)
 
-Generate a lot of [ARK](https://ark.io/) wallets quickly. This can be useful to find a nice wallet address.
+Generate a lot of [ARK](https://ark.io/) wallets quickly. This can be useful to find a fun wallet address.
 
 Uses Node.js [Worker Threads](https://nodejs.org/api/worker_threads.html) for optimal performance (will use a Polyfill if Node.js version is less than 12).
 
 ## Install
+
 ```
 $ yarn global add ark-wallet-mass-generator
 # or npm i -g ark-wallet-mass-generator
 ```
 
 ## Usage
+
 ```
 $ ark-wallet-mass-generator --help
 
@@ -47,8 +49,48 @@ AM3DCuCdZtLEsC9KFDqU7Dhme7Tce7D6mF;clerk rookie direct saddle mesh eye confirm h
 ASfKW3gsjF3FMyXgyp3WK77f2k6rdCsNKZ;fence banner dirt uniform dawn fan ribbon ill person banana ridge stone
 ```
 
+
+## Programmatic usage
+### Install
+
+```
+$ yarn add ark-wallet-mass-generator
+# or npm i ark-wallet-mass-generator
+```
+
+### `generateWallets`
+Generate some wallets in memory and returns them. If you generate a lot (I mean, a very huge amount), you may run out of memory and should use [generateWalletsFs](#generateWalletsFs) instead.
+
+```ts
+import { generateWallets } from 'ark-wallet-mass-generator'
+
+const wallets = await generateWallets({
+  amount: 500,      // Amount of wallets
+  network: 'devnet' // Target ARK network
+})
+
+console.log(wallets)
+// => { address: string; passphrase: string }[]
+```
+
+### `generateWalletsFs`
+Generate some wallets and append them to a file as they gets generated.\
+Wallets are not stored in memory after generation, there's no limit to the amount of wallets you can generate with this.
+
+```ts
+import { generateWalletsFs } from 'ark-wallet-mass-generator'
+
+await generateWalletsFs({
+  file: '_arkWallets.txt', // Output file
+  amount: 500,             // Amount of wallets
+  network: 'devnet',       // Target ARK network
+  logs: false              // Hide console logging
+})
+// => Wallets were appended to `_arkWallets.txt` 
+```
+
 ## Benchmark
-Windows 10 x64 - Intel Core i7-6700HQ CPU @ 2.60GHz (8 cores)
+Intel Core i7-6700HQ CPU @ 2.60GHz (8 cores)
 
 ```
 Generated 5000 wallets to "_arkWallets.txt" in 55s

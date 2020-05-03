@@ -46,14 +46,12 @@ export async function generateWalletsFs({
 
   const pool = Pool(() => spawn<WorkerMethods>(new Worker('./worker')), { concurrency: 6 })
 
-  let generatedWallets: Wallet[] = []
   const hrstart = process.hrtime()
 
   const fileHandle = await fs.promises.open(file, 'a')
 
   const addWallet = async ({ genWallet }: WorkerMethods) => {
     const wallet = await genWallet()
-    generatedWallets.push(wallet)
     await fileHandle.writeFile(`${wallet.address}:${wallet.passphrase}\n`)
 
     if (logs) {
@@ -75,6 +73,4 @@ export async function generateWalletsFs({
     if (!showWallets) progressBar.stop()
     console.info(`\nGenerated ${amount} wallets to "${file}" in ${hrend[0]}s.\n`)
   }
-
-  return generatedWallets
 }
