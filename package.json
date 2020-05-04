@@ -16,7 +16,8 @@
   "scripts": {
     "start": "node dist/cli.js",
     "build": "tsc",
-    "prepublishOnly": "tsc"
+    "prepublishOnly": "tsc",
+    "test": "ava --verbose --timeout=20s"
   },
   "files": [
     "dist"
@@ -30,7 +31,10 @@
     "mass",
     "bulk",
     "find",
-    "crypto"
+    "crypto",
+    "worker",
+    "thread",
+    "bip39"
   ],
   "dependencies": {
     "@arkecosystem/crypto": "^2.6.34",
@@ -47,7 +51,17 @@
     "@types/bytebuffer": "^5.0.40",
     "@types/cli-progress": "^3.4.2",
     "@types/update-notifier": "^4.1.0",
+    "ava": "^3.8.1",
+    "execa": "^4.0.0",
     "ts-node": "^8.10.1",
     "typescript": "^3.8.3"
+  },
+  "ava": {
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
   }
 }

@@ -2,9 +2,9 @@
   "compilerOptions": {
     "target": "es2019",
     "module": "commonjs",
-    "declaration": false,
-    "declarationMap": false,
-    "sourceMap": false,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
     "outDir": "./dist",
     "strict": true,
     "alwaysStrict": true,
