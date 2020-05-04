@@ -49,6 +49,7 @@ AM3DCuCdZtLEsC9KFDqU7Dhme7Tce7D6mF;clerk rookie direct saddle mesh eye confirm h
 ASfKW3gsjF3FMyXgyp3WK77f2k6rdCsNKZ;fence banner dirt uniform dawn fan ribbon ill person banana ridge stone
 ```
 
+___
 
 ## Programmatic usage
 ### Install
@@ -93,8 +94,8 @@ await generateWalletsFs({
 Intel Core i7-6700HQ CPU @ 2.60GHz (8 cores)
 
 ```
-Generated 5000 wallets to "_arkWallets.txt" in 55s
-=> 90.9 wallets/s
+Generated 20000 wallets to "_arkWallets.txt" in 208s.
+=> 96.15 wallets/s
 ```
 
 ## Related

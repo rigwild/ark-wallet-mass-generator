@@ -5,10 +5,11 @@ import { generateMnemonic } from 'bip39'
 import { createHash, randomBytes } from 'crypto'
 import * as MoreEntropy from 'promised-entropy'
 
-import { Wallet } from './types'
+import type { Wallet } from './types'
+import type { NetworkName } from '@arkecosystem/crypto/dist/types'
 
-async function genWallet(): Promise<Wallet> {
-  Managers.configManager.setFromPreset('devnet')
+async function genWallet(network: NetworkName): Promise<Wallet> {
+  Managers.configManager.setFromPreset(network)
   Managers.configManager.setHeight(999999999)
 
   const nbBits: number = 128

@@ -14,7 +14,7 @@ export async function generateWallets({ amount = 100, network = 'devnet' }: Gene
 
   let generatedWallets: Wallet[] = []
 
-  const addWallet = async ({ genWallet }: WorkerMethods) => generatedWallets.push(await genWallet())
+  const addWallet = async ({ genWallet }: WorkerMethods) => generatedWallets.push(await genWallet(network))
   for (let i = 0; i < amount; i++) pool.queue(addWallet)
 
   await pool.completed()
@@ -40,7 +40,7 @@ export async function generateWalletsFs({
     cliProgress.Presets.shades_classic
   )
   if (logs) {
-    console.info(`Generating ${amount} wallets to "${file}".\n`)
+    console.info(`Generating ${amount} wallets to "${file}" for the "${network}" network.\n`)
     if (!showWallets) progressBar.start(amount, 0)
   }
 
@@ -51,7 +51,7 @@ export async function generateWalletsFs({
   const fileHandle = await fs.promises.open(file, 'a')
 
   const addWallet = async ({ genWallet }: WorkerMethods) => {
-    const wallet = await genWallet()
+    const wallet = await genWallet(network)
     await fileHandle.writeFile(`${wallet.address}:${wallet.passphrase}\n`)
 
     if (logs) {
