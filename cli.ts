@@ -4,7 +4,7 @@
 import meow from 'meow'
 import updateNotifier from 'update-notifier'
 
-import { generateWalletsFs } from '.'
+import { generateWalletsFs } from './index'
 
 const cli = meow(
   `
